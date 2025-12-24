@@ -32,17 +32,17 @@ export default function Home() {
         console.log(userMessage);
         const response = await chatRepository.sendMessage(userMessage);
 
-        // Add the AI response to messages
-        setMessages((prev) => [
-          ...prev,
-          { role: "model", content: response.response },
-        ]);
-
         // Check if approval is required
         if (response.requiresApproval && response.pendingCalculation) {
           console.log("Opening modal...");
           setPendingCalculations(response.pendingCalculation);
           setIsModalOpen(true);
+        } else {
+          // Add the AI response to messages if its a real message and not an approval request
+          setMessages((prev) => [
+            ...prev,
+            { role: "model", content: response.response },
+          ]);
         }
       } catch (error) {
         console.error("Error sending message to the API:", error);
